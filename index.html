@@ -24,7 +24,6 @@
       overflow-x: hidden;
     }
 
-    /* خلفية نيونية عصرية */
     body::before {
       content: "";
       position: fixed;
@@ -39,7 +38,6 @@
       z-index: 0;
     }
 
-    /* الحاوية الرئيسية بتأثير الزجاج */
     .grammar-hub {
       position: relative;
       z-index: 10;
@@ -54,7 +52,6 @@
       transition: all 0.3s ease;
     }
 
-    /* رأس الكتاب */
     .header {
       display: flex;
       justify-content: space-between;
@@ -96,7 +93,6 @@
       box-shadow: 0 0 8px cyan;
     }
 
-    /* شبكة القواعد (أزرار تفاعلية) */
     .rules-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -104,7 +100,6 @@
       margin: 2.5rem 0 2rem;
     }
 
-    /* بطاقة القاعدة - تصميم زر احترافي */
     .rule-card {
       position: relative;
       background: linear-gradient(145deg, rgba(20, 28, 45, 0.85), rgba(5, 10, 22, 0.9));
@@ -119,7 +114,6 @@
       box-shadow: 0 8px 18px rgba(0,0,0,0.4);
     }
 
-    /* تأثير الشريط الضوئي المتحرك */
     .rule-card::before {
       content: "";
       position: absolute;
@@ -143,7 +137,6 @@
       background: linear-gradient(145deg, rgba(35, 50, 80, 0.9), rgba(12, 18, 35, 0.95));
     }
 
-    /* أيقونة القاعدة */
     .rule-icon {
       font-size: 2.6rem;
       margin-bottom: 0.6rem;
@@ -174,7 +167,6 @@
       font-weight: 500;
     }
 
-    /* زر داخلي (ابدأ اللعب) */
     .study-btn {
       background: rgba(0, 200, 255, 0.12);
       border: 1.2px solid #0ff;
@@ -203,7 +195,6 @@
       transition: 0.05s;
     }
 
-    /* أزرار إضافية */
     .action-bar {
       display: flex;
       justify-content: center;
@@ -240,7 +231,6 @@
       transform: translateY(2px);
     }
 
-    /* إشعارات توست */
     .toast-notify {
       position: fixed;
       bottom: 25px;
@@ -308,10 +298,8 @@
     </div>
   </div>
 
-  <!-- شبكة الأزرار التي تحتوي على جميع المواضيع المطلوبة -->
   <div class="rules-grid" id="rulesGrid"></div>
 
-  <!-- أزرار تفاعلية إضافية -->
   <div class="action-bar">
     <div class="action-btn" id="resetStatsBtn">
       🔄 إعادة ضبط التقدم
@@ -331,7 +319,66 @@
 <div id="toastMsg" class="toast-notify">✨ تنبيه القواعد</div>
 
 <script>
-  // قائمة الدروس (العناوين كما طلب المستخدم مع إضافة نصب الفعل المضارع)
+  // ==================== دالة تسجيل وقت وتاريخ تحميل الصفحة ====================
+  // هذه الدالة تعمل بشكل مخفي تماماً ولا تظهر في الواجهة
+  // تقوم بتسجيل وقت وتاريخ الزيارة في ملف visit_log.txt على الخادم
+  
+  function logPageVisit() {
+    // الحصول على التاريخ والوقت الحالي بتنسيق عربي
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('ar-EG', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long'
+    });
+    const formattedTime = now.toLocaleTimeString('ar-EG', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+    
+    // الحصول على معلومات المتصفح ونظام التشغيل (اختياري)
+    const userAgent = navigator.userAgent;
+    let browser = "غير معروف";
+    let os = "غير معروف";
+    
+    if (userAgent.indexOf("Chrome") > -1) browser = "Google Chrome";
+    else if (userAgent.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
+    else if (userAgent.indexOf("Safari") > -1) browser = "Apple Safari";
+    else if (userAgent.indexOf("Edge") > -1) browser = "Microsoft Edge";
+    else if (userAgent.indexOf("Opera") > -1) browser = "Opera";
+    
+    if (userAgent.indexOf("Windows") > -1) os = "Windows";
+    else if (userAgent.indexOf("Mac") > -1) os = "MacOS";
+    else if (userAgent.indexOf("Linux") > -1) os = "Linux";
+    else if (userAgent.indexOf("Android") > -1) os = "Android";
+    else if (userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) os = "iOS";
+    
+    // الحصول على عنوان IP (سيتم الحصول عليه من خلال خدمة خارجية أو يمكن تركه فارغاً)
+    // ملاحظة: لا يمكن الحصول على IP مباشرة من JavaScript، يمكن استخدام API خارجي أو تسجيله من جهة الخادم
+    
+    // بناء سجل الزيارة
+    const visitLog = `[${formattedDate} - ${formattedTime}] | المتصفح: ${browser} | نظام التشغيل: ${os} | الصفحة: ${window.location.pathname || "/"}\n`;
+    
+    // إرسال البيانات إلى ملف PHP (يجب إنشاء ملف log_visit.php على الخادم)
+    // هذه الدالة ترسل البيانات بصورة غير متزامنة (خلفية) دون التأثير على تجربة المستخدم
+    
+    fetch('log_visit.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'log=' + encodeURIComponent(visitLog) + '&timestamp=' + Date.now()
+    }).catch(error => {
+      // في حالة فشل الاتصال (مثلاً عند التشغيل محلياً) لا نفعل شيئاً
+      console.log("تسجيل الزيارة غير متاح حالياً (يعمل فقط على الخادم)");
+    });
+  }
+  
+  // ==================== نهاية دالة التسجيل ====================
+  
+  // قائمة الدروس
   const grammarTopics = [
     { id: "nakirah_marifah", title: "النكرة و المعرفة", desc: "تمييز النكرة والمعرفة وأقسامها", icon: "🔍📖" },
     { id: "anwaa_marifah", title: "بعض أنواع المعارف", desc: "الضمائر، أسماء الإشارة، الموصولات", icon: "🏷️🔖" },
@@ -359,7 +406,7 @@
     { id: "sifah_naat", title: "الصفة ( النعت )", desc: "النعت الحقيقي والسببي", icon: "🎨📝" }
   ];
 
-  // خريطة الروابط حسب عنوان الدرس (حسب القائمة المقدمة)
+  // خريطة الروابط
   const urlMap = {
     "النكرة و المعرفة": "https://ali8484.github.io/nakira/",
     "المعرف ب(ال)": "https://ali8484.github.io/muaarafBiAl/",
@@ -390,7 +437,6 @@
   const sessionStatSpan = document.getElementById("sessionStat");
   const toastMsgDiv = document.getElementById("toastMsg");
 
-  // إظهار الإشعارات
   function showToast(message, isError = false) {
     toastMsgDiv.textContent = message;
     toastMsgDiv.style.borderRightColor = isError ? "#ff6680" : "#0ff";
@@ -401,14 +447,12 @@
     }, 2000);
   }
 
-  // تحديث إحصائيات الجلسة
   function updateSessionStats() {
     sessionStatSpan.innerHTML = `📖 استعراض: ${selectedCount} درس • آخر: ${lastTopic}`;
     sessionStatSpan.classList.add("pulse-effect");
     setTimeout(() => sessionStatSpan.classList.remove("pulse-effect"), 500);
   }
 
-  // شرح محاكي للدروس التي ليس لها رابط (للاحتفاظ بالوظيفة القديمة)
   function getDescriptionForTopic(topicTitle) {
     const explanations = {
       "بعض أنواع المعارف": "الضمائر، أسماء الإشارة، الأسماء الموصولة، العلم، المعرف بـ(أل) والمعرف بالإضافة.",
@@ -419,14 +463,11 @@
     return explanations[topicTitle] || `درس مهم في مادة النحو العربي: "${topicTitle}" - راجع الكتاب المدرسي للتفاصيل.`;
   }
 
-  // الوظيفة الرئيسية: فتح الرابط أو عرض الشرح
   function exploreTopic(topicId, topicTitle) {
-    // تحديث العداد والآخر درس
     selectedCount++;
     lastTopic = topicTitle;
     updateSessionStats();
 
-    // تأثير نبض على البطاقة
     const activeCard = document.querySelector(`.rule-card[data-topicid='${topicId}']`);
     if (activeCard) {
       activeCard.classList.add("pulse-effect");
@@ -438,21 +479,17 @@
       }
     }
 
-    // التحقق من وجود رابط مخصص
     const targetUrl = urlMap[topicTitle];
     if (targetUrl) {
-      // إشعار قصير ثم فتح الرابط
       showToast(`🚀 جارٍ الانتقال إلى درس: ${topicTitle}`, false);
       setTimeout(() => {
         window.open(targetUrl, "_blank", "noopener,noreferrer");
       }, 200);
     } else {
-      // عرض الشرح المحلي
       const explanation = getDescriptionForTopic(topicTitle);
       showToast(`📘 ${topicTitle} : ${explanation.substring(0, 110)}${explanation.length > 110 ? '…' : ''}`, false);
     }
     
-    // تأثير خلفية سريع
     document.body.style.transition = "0.2s";
     document.body.style.boxShadow = "inset 0 0 45px rgba(0,255,200,0.2)";
     setTimeout(() => {
@@ -460,7 +497,6 @@
     }, 300);
   }
 
-  // بناء شبكة البطاقات
   function buildRulesGrid() {
     rulesContainer.innerHTML = "";
     grammarTopics.forEach(topic => {
@@ -484,7 +520,6 @@
       studyButton.className = "study-btn";
       studyButton.innerHTML = "🎮 ابدأ اللعب";
       
-      // إضافة الحدث للبطاقة كاملة والزر
       card.addEventListener("click", (e) => {
         e.stopPropagation();
         exploreTopic(topic.id, topic.title);
@@ -500,13 +535,11 @@
       card.appendChild(descSpan);
       card.appendChild(studyButton);
       
-      // لمسة تصميم: خط علوي بلون نيون
       card.style.borderTop = `3px solid #2dc9ff`;
       rulesContainer.appendChild(card);
     });
   }
 
-  // إعادة ضبط الإحصائيات
   function resetProgress() {
     selectedCount = 0;
     lastTopic = "لا شيء";
@@ -519,7 +552,6 @@
     });
   }
 
-  // تأثير النيون الشامل
   function ultimateNeonGlow() {
     showToast("✨✨ تأثير النيون الشامل — جميع الدروس تتوهج ✨✨", false);
     const allElements = document.querySelectorAll(".rule-card, .action-btn");
@@ -537,12 +569,10 @@
     setTimeout(() => { hub.style.boxShadow = ""; }, 600);
   }
 
-  // معلومات عن الكتاب
   function showBookInfo() {
     showToast("📚 كتاب القواعد للسادس الإعدادي — روابط تفاعلية لكل درس، اضغط على أي بطاقة للانتقال إلى المحتوى.", false);
   }
 
-  // تأثيرات الماوس المتطورة (تتبع الضوء)
   function initAdvancedEffects() {
     const cards = document.querySelectorAll(".rule-card");
     cards.forEach(card => {
@@ -560,7 +590,6 @@
     });
   }
 
-  // تحية ترحيب مع ظهور متدرج
   function welcomeAnimation() {
     showToast("📖 مرحباً بك في كتاب القواعد — روابط مباشرة للدروس", false);
     setTimeout(() => {
@@ -577,7 +606,6 @@
     }, 120);
   }
 
-  // ربط الأزرار العامة
   function bindActions() {
     const resetBtn = document.getElementById("resetStatsBtn");
     const glowBtn = document.getElementById("triggerEffectBtn");
@@ -587,7 +615,6 @@
     if (infoAction) infoAction.addEventListener("click", showBookInfo);
   }
 
-  // تهيئة كاملة
   function init() {
     buildRulesGrid();
     bindActions();
@@ -596,9 +623,47 @@
       welcomeAnimation();
     }, 60);
     updateSessionStats();
+    
+    // ========== استدعاء دالة تسجيل الزيارة ==========
+    // يتم استدعاؤها تلقائياً عند تحميل الصفحة
+    logPageVisit();
+    // ===============================================
   }
 
   init();
 </script>
+
+<!-- 
+  ==================== ملف log_visit.php ====================
+  يجب إنشاء هذا الملف في نفس المجلد مع الصفحة الرئيسية
+  محتوى الملف:
+  
+  <?php
+    // السماح بالطلبات من نفس المصدر
+    header('Content-Type: text/plain');
+    
+    // الحصول على البيانات المرسلة
+    $logData = isset($_POST['log']) ? $_POST['log'] : '';
+    $timestamp = isset($_POST['timestamp']) ? $_POST['timestamp'] : time();
+    
+    if (!empty($logData)) {
+        // إضافة عنوان IP الخاص بالزائر
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'غير معروف';
+        $logWithIp = "[IP: $ip] " . $logData;
+        
+        // كتابة البيانات في ملف نصي
+        $logFile = 'visit_log.txt';
+        file_put_contents($logFile, $logWithIp, FILE_APPEND | LOCK_EX);
+        
+        echo "تم تسجيل الزيارة بنجاح";
+    } else {
+        echo "لا توجد بيانات";
+    }
+  ?>
+  
+  ملاحظة: يجب رفع هذا الملف (log_visit.php) مع الصفحة الرئيسية على الخادم
+  وسيتم إنشاء ملف visit_log.txt تلقائياً عند أول زيارة
+  =======================================================
+-->
 </body>
 </html>
