@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>كتاب القواعد | السادس الإعدادي - روابط تفاعلية</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 30%, #0f0f1a, #020208);
+      font-family: 'Segoe UI', 'Tajawal', 'Poppins', 'Cairo', system-ui, -apple-system, 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* خلفية نيونية عصرية */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(45deg, rgba(0, 255, 200, 0.02) 0px, rgba(0, 255, 200, 0.02) 2px, transparent 2px, transparent 8px),
+        repeating-linear-gradient(135deg, rgba(255, 100, 200, 0.02) 0px, rgba(255, 100, 200, 0.02) 1px, transparent 1px, transparent 12px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* الحاوية الرئيسية بتأثير الزجاج */
+    .grammar-hub {
+      position: relative;
+      z-index: 10;
+      max-width: 1500px;
+      width: 100%;
+      background: rgba(8, 15, 25, 0.65);
+      backdrop-filter: blur(14px);
+      border-radius: 2.5rem;
+      border: 1px solid rgba(0, 255, 200, 0.35);
+      box-shadow: 0 25px 45px rgba(0,0,0,0.6), 0 0 0 1px rgba(0, 255, 200, 0.2) inset, 0 0 25px rgba(0, 255, 200, 0.2);
+      padding: 2rem 2rem 2.5rem;
+      transition: all 0.3s ease;
+    }
+
+    /* رأس الكتاب */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid rgba(0, 255, 200, 0.5);
+      padding-bottom: 1rem;
+    }
+
+    .title-section h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffe6b3, #ffb347, #7efff5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 10px rgba(255,200,100,0.3);
+    }
+
+    .title-section p {
+      color: #bbd4ff;
+      font-weight: 500;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .stats-badge {
+      background: rgba(0, 30, 45, 0.7);
+      backdrop-filter: blur(4px);
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      border: 1px solid #0ff;
+      color: #0ff;
+      font-family: monospace;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 0 8px cyan;
+    }
+
+    /* شبكة القواعد (أزرار تفاعلية) */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0 2rem;
+    }
+
+    /* بطاقة القاعدة - تصميم زر احترافي */
+    .rule-card {
+      position: relative;
+      background: linear-gradient(145deg, rgba(20, 28, 45, 0.85), rgba(5, 10, 22, 0.9));
+      border-radius: 1.8rem;
+      padding: 1.4rem 0.8rem 1.4rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      border: 1px solid rgba(0, 255, 200, 0.4);
+      backdrop-filter: blur(4px);
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+    }
+
+    /* تأثير الشريط الضوئي المتحرك */
+    .rule-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 200, 0.2), transparent);
+      transition: left 0.6s ease;
+      pointer-events: none;
+    }
+
+    .rule-card:hover::before {
+      left: 100%;
+    }
+
+    .rule-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: #0ff;
+      box-shadow: 0 18px 32px rgba(0, 255, 200, 0.3), 0 0 18px rgba(0, 255, 200, 0.4);
+      background: linear-gradient(145deg, rgba(35, 50, 80, 0.9), rgba(12, 18, 35, 0.95));
+    }
+
+    /* أيقونة القاعدة */
+    .rule-icon {
+      font-size: 2.6rem;
+      margin-bottom: 0.6rem;
+      filter: drop-shadow(0 0 5px cyan);
+      transition: all 0.2s;
+    }
+
+    .rule-card:hover .rule-icon {
+      transform: scale(1.08);
+      filter: drop-shadow(0 0 12px #0ff);
+    }
+
+    .rule-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(to bottom, #f5f9ff, #b9dcff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.4rem;
+      padding: 0 5px;
+    }
+
+    .rule-desc {
+      font-size: 0.7rem;
+      color: #9bb5e0;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    /* زر داخلي (ابدأ اللعب) */
+    .study-btn {
+      background: rgba(0, 200, 255, 0.12);
+      border: 1.2px solid #0ff;
+      color: #0ff;
+      padding: 0.4rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: bold;
+      font-size: 0.75rem;
+      transition: 0.2s;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rule-card:hover .study-btn {
+      background: #0ff;
+      color: #0a0f1e;
+      box-shadow: 0 0 12px #0ff;
+      border-color: #fff;
+    }
+
+    .rule-card:active {
+      transform: scale(0.97);
+      transition: 0.05s;
+    }
+
+    /* أزرار إضافية */
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1.8rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      background: rgba(16, 26, 45, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 200, 255, 0.7);
+      padding: 0.7rem 1.6rem;
+      border-radius: 3rem;
+      font-weight: bold;
+      color: #cee9ff;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .action-btn:hover {
+      background: rgba(0, 255, 200, 0.2);
+      border-color: #0ff;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 255, 200, 0.3);
+    }
+
+    .action-btn:active {
+      transform: translateY(2px);
+    }
+
+    /* إشعارات توست */
+    .toast-notify {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(20px);
+      border-right: 5px solid #0ff;
+      padding: 10px 28px;
+      border-radius: 60px;
+      color: #9effff;
+      font-weight: bold;
+      font-family: 'Cairo', monospace;
+      z-index: 200;
+      opacity: 0;
+      transition: 0.2s;
+      pointer-events: none;
+      font-size: 0.9rem;
+      box-shadow: 0 0 20px rgba(0,255,200,0.4);
+      text-align: center;
+    }
+
+    .toast-notify.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #5a7a9a;
+      border-top: 1px dashed rgba(0,255,200,0.25);
+      padding-top: 1rem;
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 0 0 rgba(0, 255, 200, 0.6); }
+      70% { box-shadow: 0 0 0 12px rgba(0, 255, 200, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 255, 200, 0); }
+    }
+
+    .pulse-effect {
+      animation: pulse-glow 0.5s ease-out;
+    }
+
+    @media (max-width: 680px) {
+      .grammar-hub { padding: 1rem; }
+      .rule-title { font-size: 1rem; }
+      .stats-badge { font-size: 0.75rem; }
+      .rules-grid { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grammar-hub">
+  <div class="header">
+    <div class="title-section">
+      <h1>📖 كتاب القواعد 📖</h1>
+      <p>السادس الإعدادي • روابط تفاعلية • اضغط على أي درس لفتح الرابط</p>
+    </div>
+    <div class="stats-badge" id="sessionStat">
+      📚 دروس القواعد
+    </div>
+  </div>
+
+  <!-- شبكة الأزرار التي تحتوي على جميع المواضيع المطلوبة -->
+  <div class="rules-grid" id="rulesGrid"></div>
+
+  <!-- أزرار تفاعلية إضافية -->
+  <div class="action-bar">
+    <div class="action-btn" id="resetStatsBtn">
+      🔄 إعادة ضبط التقدم
+    </div>
+    <div class="action-btn" id="triggerEffectBtn">
+      ✨ تأثير النيون الشامل
+    </div>
+    <div class="action-btn" id="infoBtn">
+      📖 عن الكتاب
+    </div>
+  </div>
+  <div class="footer-note">
+    // كل زر يأخذك إلى الرابط المخصص للدرس — تجربة تعليمية تفاعلية //
+  </div>
+</div>
+
+<div id="toastMsg" class="toast-notify">✨ تنبيه القواعد</div>
+
+<script>
+  // قائمة الدروس (العناوين كما طلب المستخدم مع إضافة نصب الفعل المضارع)
+  const grammarTopics = [
+    { id: "nakirah_marifah", title: "النكرة و المعرفة", desc: "تمييز النكرة والمعرفة وأقسامها", icon: "🔍📖" },
+    { id: "anwaa_marifah", title: "بعض أنواع المعارف", desc: "الضمائر، أسماء الإشارة، الموصولات", icon: "🏷️🔖" },
+    { id: "al_tareef", title: "المعرف ب(ال)", desc: "أل التعريف وأقسامها", icon: "🟢ال" },
+    { id: "alam", title: "العلم", desc: "العلم وأنواعه وعلاماته", icon: "⭐🏷️" },
+    { id: "idafah", title: "المعرف بالاضافة", desc: "الإضافة إلى معرفة", icon: "➕📘" },
+    { id: "mubtada_khabar", title: "المبتدأ و الخبر", desc: "أركان الجملة الاسمية", icon: "🏛️📝" },
+    { id: "kana_sisters", title: "كان واخواتها", desc: "الأفعال الناسخة", icon: "⚙️🔧" },
+    { id: "inna_sisters", title: "ان و اخواتها", desc: "إنَّ وأخواتها (الحروف الناسخة)", icon: "✨📜" },
+    { id: "fail", title: "الفاعل", desc: "من قام بالفعل وعلامات إعرابه", icon: "👤⚡" },
+    { id: "mafool_bih", title: "المفعول به", desc: "من يقع عليه الفعل", icon: "🎯📌" },
+    { id: "naib_fail", title: "نائب الفاعل", desc: "ما ناب عن الفاعل", icon: "🔄👥" },
+    { id: "mafool_mutlaq", title: "المفعول المطلق", desc: "مصدر مؤكد للفعل", icon: "💥📈" },
+    { id: "mafool_feeh", title: "المفعول فيه (ظرف الزمان و المكان)", desc: "ظرفا الزمان والمكان", icon: "⏳📍" },
+    { id: "i3rab_mudari", title: "اعراب الفعل المضارع", desc: "علامات الإعراب الأصلية والفرعية", icon: "🔄📊" },
+    { id: "raf_mudari", title: "رفع الفعل المضارع", desc: "حالات الرفع وعلاماته", icon: "⬆️📖" },
+    { id: "nasb_mudari", title: "نصب الفعل المضارع", desc: "حالات النصب وعلاماته", icon: "📌⬇️" },
+    { id: "jazm_mudari", title: "جزم الفعل المضارع", desc: "أدوات الجزم وعلاماته", icon: "⛔✂️" },
+    { id: "afaal_khamsa", title: "الافعال الخمسة و اعرابها", desc: "تثنية وجمع المذكر والمخاطب", icon: "🔹5️⃣🔸" },
+    { id: "muthanna_i3rab", title: "المثنى و اعرابه", desc: "إعراب المثنى بالألف والياء", icon: "2️⃣✒️" },
+    { id: "jamm_mudakkar_salim", title: "جمع المذكر السالم و اعرابه", desc: "واو ونون ، ياء ونون", icon: "🧑‍🤝‍🧑📚" },
+    { id: "jamm_muannath_salim", title: "جمع المؤنث السالم و اعرابه", desc: "علامات الإعراب بالضمة والكسرة", icon: "👩‍👩‍👧🌸" },
+    { id: "jamm_takseer", title: "جمع التكسير", desc: "أنواعه واعرابه", icon: "🔢🌀" },
+    { id: "asmaa_khamsa", title: "الاسماء الخمسة", desc: "أب، أخ، حم، فو، ذو", icon: "⭐🖐️" },
+    { id: "sifah_naat", title: "الصفة ( النعت )", desc: "النعت الحقيقي والسببي", icon: "🎨📝" }
+  ];
+
+  // خريطة الروابط حسب عنوان الدرس (حسب القائمة المقدمة)
+  const urlMap = {
+    "النكرة و المعرفة": "https://ali8484.github.io/nakira/",
+    "المعرف ب(ال)": "https://ali8484.github.io/muaarafBiAl/",
+    "العلم": "https://ali8484.github.io/alaalam/",
+    "المعرف بالاضافة": "https://ali8484.github.io/muraafIdhafa/",
+    "المبتدأ و الخبر": "https://ali8484.github.io/mubtadawakhabar/",
+    "كان واخواتها": "https://ali8484.github.io/kanwaakhwatiha/",
+    "ان و اخواتها": "https://ali8484.github.io/Inwaakhwatiha/",
+    "الفاعل": "https://ali8484.github.io/Alfail/",
+    "المفعول به": "https://ali8484.github.io/mafoolBih/",
+    "نائب الفاعل": "https://ali8484.github.io/naibalfail/",
+    "المفعول المطلق": "https://ali8484.github.io/mafoolmutlaq/",
+    "المفعول فيه (ظرف الزمان و المكان)": "https://ali8484.github.io/zarif/",
+    "رفع الفعل المضارع": "https://ali8484.github.io/RafiaMudharia/",
+    "نصب الفعل المضارع": "https://ali8484.github.io/nasibmudharia/",
+    "جزم الفعل المضارع": "https://ali8484.github.io/jazimmudharia/",
+    "جمع المذكر السالم و اعرابه": "https://ali8484.github.io/jamiamuthakar/",
+    "جمع المؤنث السالم و اعرابه": "https://ali8484.github.io/jamiamunath/",
+    "جمع التكسير": "https://ali8484.github.io/jamiatakseer/",
+    "الاسماء الخمسة": "https://ali8484.github.io/alasmaaalkhamsa/",
+    "الصفة ( النعت )": "https://ali8484.github.io/sifa/"
+  };
+
+  let selectedCount = 0;
+  let lastTopic = "لا شيء";
+
+  const rulesContainer = document.getElementById("rulesGrid");
+  const sessionStatSpan = document.getElementById("sessionStat");
+  const toastMsgDiv = document.getElementById("toastMsg");
+
+  // إظهار الإشعارات
+  function showToast(message, isError = false) {
+    toastMsgDiv.textContent = message;
+    toastMsgDiv.style.borderRightColor = isError ? "#ff6680" : "#0ff";
+    toastMsgDiv.style.color = isError ? "#ffaa99" : "#b5ffff";
+    toastMsgDiv.classList.add("show");
+    setTimeout(() => {
+      toastMsgDiv.classList.remove("show");
+    }, 2000);
+  }
+
+  // تحديث إحصائيات الجلسة
+  function updateSessionStats() {
+    sessionStatSpan.innerHTML = `📖 استعراض: ${selectedCount} درس • آخر: ${lastTopic}`;
+    sessionStatSpan.classList.add("pulse-effect");
+    setTimeout(() => sessionStatSpan.classList.remove("pulse-effect"), 500);
+  }
+
+  // شرح محاكي للدروس التي ليس لها رابط (للاحتفاظ بالوظيفة القديمة)
+  function getDescriptionForTopic(topicTitle) {
+    const explanations = {
+      "بعض أنواع المعارف": "الضمائر، أسماء الإشارة، الأسماء الموصولة، العلم، المعرف بـ(أل) والمعرف بالإضافة.",
+      "اعراب الفعل المضارع": "يرفع بالضمة، وينصب بالفتحة، ويجزم بالسكون إذا صح آخره.",
+      "الافعال الخمسة و اعرابها": "كل فعل مضارع اتصلت به ألف الاثنين أو واو الجماعة أو ياء المخاطبة، ترفع بثبوت النون وتنصب وتجزم بحذفها.",
+      "المثنى و اعرابه": "المثنى: ما دل على اثنين بزيادة ألف ونون أو ياء ونون، يرفع بالألف وينصب ويجر بالياء."
+    };
+    return explanations[topicTitle] || `درس مهم في مادة النحو العربي: "${topicTitle}" - راجع الكتاب المدرسي للتفاصيل.`;
+  }
+
+  // الوظيفة الرئيسية: فتح الرابط أو عرض الشرح
+  function exploreTopic(topicId, topicTitle) {
+    // تحديث العداد والآخر درس
+    selectedCount++;
+    lastTopic = topicTitle;
+    updateSessionStats();
+
+    // تأثير نبض على البطاقة
+    const activeCard = document.querySelector(`.rule-card[data-topicid='${topicId}']`);
+    if (activeCard) {
+      activeCard.classList.add("pulse-effect");
+      setTimeout(() => activeCard.classList.remove("pulse-effect"), 500);
+      const innerBtn = activeCard.querySelector(".study-btn");
+      if (innerBtn) {
+        innerBtn.style.transform = "scale(0.94)";
+        setTimeout(() => { if(innerBtn) innerBtn.style.transform = ""; }, 150);
+      }
+    }
+
+    // التحقق من وجود رابط مخصص
+    const targetUrl = urlMap[topicTitle];
+    if (targetUrl) {
+      // إشعار قصير ثم فتح الرابط
+      showToast(`🚀 جارٍ الانتقال إلى درس: ${topicTitle}`, false);
+      setTimeout(() => {
+        window.open(targetUrl, "_blank", "noopener,noreferrer");
+      }, 200);
+    } else {
+      // عرض الشرح المحلي
+      const explanation = getDescriptionForTopic(topicTitle);
+      showToast(`📘 ${topicTitle} : ${explanation.substring(0, 110)}${explanation.length > 110 ? '…' : ''}`, false);
+    }
+    
+    // تأثير خلفية سريع
+    document.body.style.transition = "0.2s";
+    document.body.style.boxShadow = "inset 0 0 45px rgba(0,255,200,0.2)";
+    setTimeout(() => {
+      document.body.style.boxShadow = "";
+    }, 300);
+  }
+
+  // بناء شبكة البطاقات
+  function buildRulesGrid() {
+    rulesContainer.innerHTML = "";
+    grammarTopics.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "rule-card";
+      card.setAttribute("data-topicid", topic.id);
+      
+      const iconSpan = document.createElement("div");
+      iconSpan.className = "rule-icon";
+      iconSpan.textContent = topic.icon;
+      
+      const titleSpan = document.createElement("div");
+      titleSpan.className = "rule-title";
+      titleSpan.textContent = topic.title;
+      
+      const descSpan = document.createElement("div");
+      descSpan.className = "rule-desc";
+      descSpan.textContent = topic.desc;
+      
+      const studyButton = document.createElement("button");
+      studyButton.className = "study-btn";
+      studyButton.innerHTML = "🎮 ابدأ اللعب";
+      
+      // إضافة الحدث للبطاقة كاملة والزر
+      card.addEventListener("click", (e) => {
+        e.stopPropagation();
+        exploreTopic(topic.id, topic.title);
+      });
+      
+      studyButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        exploreTopic(topic.id, topic.title);
+      });
+      
+      card.appendChild(iconSpan);
+      card.appendChild(titleSpan);
+      card.appendChild(descSpan);
+      card.appendChild(studyButton);
+      
+      // لمسة تصميم: خط علوي بلون نيون
+      card.style.borderTop = `3px solid #2dc9ff`;
+      rulesContainer.appendChild(card);
+    });
+  }
+
+  // إعادة ضبط الإحصائيات
+  function resetProgress() {
+    selectedCount = 0;
+    lastTopic = "لا شيء";
+    updateSessionStats();
+    showToast("🔄 تمت إعادة ضبط عداد الدروس", false);
+    const allCards = document.querySelectorAll(".rule-card");
+    allCards.forEach(card => {
+      card.style.transform = "scale(0.98)";
+      setTimeout(() => { card.style.transform = ""; }, 150);
+    });
+  }
+
+  // تأثير النيون الشامل
+  function ultimateNeonGlow() {
+    showToast("✨✨ تأثير النيون الشامل — جميع الدروس تتوهج ✨✨", false);
+    const allElements = document.querySelectorAll(".rule-card, .action-btn");
+    allElements.forEach(el => {
+      el.classList.add("pulse-effect");
+      const origBox = el.style.boxShadow;
+      el.style.boxShadow = "0 0 20px cyan, 0 0 8px magenta";
+      setTimeout(() => {
+        el.style.boxShadow = origBox || "";
+        el.classList.remove("pulse-effect");
+      }, 550);
+    });
+    const hub = document.querySelector(".grammar-hub");
+    hub.style.boxShadow = "0 0 0 2px cyan, 0 25px 45px rgba(0,0,0,0.6)";
+    setTimeout(() => { hub.style.boxShadow = ""; }, 600);
+  }
+
+  // معلومات عن الكتاب
+  function showBookInfo() {
+    showToast("📚 كتاب القواعد للسادس الإعدادي — روابط تفاعلية لكل درس، اضغط على أي بطاقة للانتقال إلى المحتوى.", false);
+  }
+
+  // تأثيرات الماوس المتطورة (تتبع الضوء)
+  function initAdvancedEffects() {
+    const cards = document.querySelectorAll(".rule-card");
+    cards.forEach(card => {
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const xPercent = (x / rect.width) * 100;
+        const yPercent = (y / rect.height) * 100;
+        card.style.background = `radial-gradient(circle at ${xPercent}% ${yPercent}%, rgba(0, 210, 255, 0.2), rgba(8, 12, 28, 0.92))`;
+      });
+      card.addEventListener("mouseleave", () => {
+        card.style.background = "";
+      });
+    });
+  }
+
+  // تحية ترحيب مع ظهور متدرج
+  function welcomeAnimation() {
+    showToast("📖 مرحباً بك في كتاب القواعد — روابط مباشرة للدروس", false);
+    setTimeout(() => {
+      const cards = document.querySelectorAll(".rule-card");
+      cards.forEach((card, idx) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        setTimeout(() => {
+          card.style.transition = "opacity 0.35s ease, transform 0.35s ease";
+          card.style.opacity = "1";
+          card.style.transform = "translateY(0)";
+        }, idx * 40);
+      });
+    }, 120);
+  }
+
+  // ربط الأزرار العامة
+  function bindActions() {
+    const resetBtn = document.getElementById("resetStatsBtn");
+    const glowBtn = document.getElementById("triggerEffectBtn");
+    const infoAction = document.getElementById("infoBtn");
+    if (resetBtn) resetBtn.addEventListener("click", resetProgress);
+    if (glowBtn) glowBtn.addEventListener("click", ultimateNeonGlow);
+    if (infoAction) infoAction.addEventListener("click", showBookInfo);
+  }
+
+  // تهيئة كاملة
+  function init() {
+    buildRulesGrid();
+    bindActions();
+    setTimeout(() => {
+      initAdvancedEffects();
+      welcomeAnimation();
+    }, 60);
+    updateSessionStats();
+  }
+
+  init();
+</script>
+</body>
+</html>
