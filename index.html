@@ -282,6 +282,8 @@
       .rule-title { font-size: 1rem; }
       .stats-badge { font-size: 0.75rem; }
       .rules-grid { gap: 1rem; }
+      .action-bar { gap: 0.8rem; }
+      .action-btn { padding: 0.5rem 1rem; font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -307,6 +309,9 @@
     <div class="action-btn" id="triggerEffectBtn">
       ✨ تأثير النيون الشامل
     </div>
+    <div class="action-btn" id="exportLogBtn">
+      📥 تصدير سجل الزيارات
+    </div>
     <div class="action-btn" id="infoBtn">
       📖 عن الكتاب
     </div>
@@ -319,64 +324,198 @@
 <div id="toastMsg" class="toast-notify">✨ تنبيه القواعد</div>
 
 <script>
-  // ==================== دالة تسجيل وقت وتاريخ تحميل الصفحة ====================
-  // هذه الدالة تعمل بشكل مخفي تماماً ولا تظهر في الواجهة
-  // تقوم بتسجيل وقت وتاريخ الزيارة في ملف visit_log.txt على الخادم
+  // ==================== نظام تسجيل الزيارات باستخدام IndexedDB ====================
+  // هذا الحل يعمل بدون PHP، ويخزن الزيارات في قاعدة بيانات المتصفح
   
-  function logPageVisit() {
-    // الحصول على التاريخ والوقت الحالي بتنسيق عربي
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('ar-EG', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long'
-    });
-    const formattedTime = now.toLocaleTimeString('ar-EG', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
+  class VisitLogger {
+    constructor() {
+      this.dbName = 'GrammarBookVisits';
+      this.dbVersion = 1;
+      this.db = null;
+      this.initDB();
+    }
     
-    // الحصول على معلومات المتصفح ونظام التشغيل (اختياري)
-    const userAgent = navigator.userAgent;
-    let browser = "غير معروف";
-    let os = "غير معروف";
+    async initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(this.dbName, this.dbVersion);
+        
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          this.db = request.result;
+          resolve();
+        };
+        
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains('visits')) {
+            const store = db.createObjectStore('visits', { keyPath: 'id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp', { unique: false });
+            store.createIndex('date', 'date', { unique: false });
+          }
+        };
+      });
+    }
     
-    if (userAgent.indexOf("Chrome") > -1) browser = "Google Chrome";
-    else if (userAgent.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
-    else if (userAgent.indexOf("Safari") > -1) browser = "Apple Safari";
-    else if (userAgent.indexOf("Edge") > -1) browser = "Microsoft Edge";
-    else if (userAgent.indexOf("Opera") > -1) browser = "Opera";
+    async logVisit() {
+      await this.initDB();
+      
+      const now = new Date();
+      const visitData = {
+        timestamp: now.toISOString(),
+        date: now.toLocaleDateString('ar-EG', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long'
+        }),
+        time: now.toLocaleTimeString('ar-EG', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }),
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+        referrer: document.referrer || 'مباشر',
+        screenSize: `${window.screen.width}x${window.screen.height}`
+      };
+      
+      // الحصول على معلومات المتصفح ونظام التشغيل
+      let browser = "غير معروف";
+      const ua = navigator.userAgent;
+      if (ua.indexOf("Chrome") > -1) browser = "Google Chrome";
+      else if (ua.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
+      else if (ua.indexOf("Safari") > -1) browser = "Apple Safari";
+      else if (ua.indexOf("Edge") > -1) browser = "Microsoft Edge";
+      else if (ua.indexOf("Opera") > -1) browser = "Opera";
+      
+      let os = "غير معروف";
+      if (ua.indexOf("Windows") > -1) os = "Windows";
+      else if (ua.indexOf("Mac") > -1) os = "MacOS";
+      else if (ua.indexOf("Linux") > -1) os = "Linux";
+      else if (ua.indexOf("Android") > -1) os = "Android";
+      else if (ua.indexOf("iPhone") > -1 || ua.indexOf("iPad") > -1) os = "iOS";
+      
+      visitData.browser = browser;
+      visitData.os = os;
+      
+      return new Promise((resolve, reject) => {
+        const transaction = this.db.transaction(['visits'], 'readwrite');
+        const store = transaction.objectStore('visits');
+        const request = store.add(visitData);
+        
+        request.onsuccess = () => {
+          console.log('✅ تم تسجيل الزيارة:', visitData.date, visitData.time);
+          resolve();
+        };
+        request.onerror = () => reject(request.error);
+      });
+    }
     
-    if (userAgent.indexOf("Windows") > -1) os = "Windows";
-    else if (userAgent.indexOf("Mac") > -1) os = "MacOS";
-    else if (userAgent.indexOf("Linux") > -1) os = "Linux";
-    else if (userAgent.indexOf("Android") > -1) os = "Android";
-    else if (userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) os = "iOS";
+    async getAllVisits() {
+      await this.initDB();
+      
+      return new Promise((resolve, reject) => {
+        const transaction = this.db.transaction(['visits'], 'readonly');
+        const store = transaction.objectStore('visits');
+        const request = store.getAll();
+        
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
     
-    // الحصول على عنوان IP (سيتم الحصول عليه من خلال خدمة خارجية أو يمكن تركه فارغاً)
-    // ملاحظة: لا يمكن الحصول على IP مباشرة من JavaScript، يمكن استخدام API خارجي أو تسجيله من جهة الخادم
+    async getVisitsCount() {
+      const visits = await this.getAllVisits();
+      return visits.length;
+    }
     
-    // بناء سجل الزيارة
-    const visitLog = `[${formattedDate} - ${formattedTime}] | المتصفح: ${browser} | نظام التشغيل: ${os} | الصفحة: ${window.location.pathname || "/"}\n`;
+    async exportToFile() {
+      const visits = await this.getAllVisits();
+      
+      if (visits.length === 0) {
+        showToast("⚠️ لا توجد زيارات مسجلة بعد", true);
+        return false;
+      }
+      
+      // إنشاء محتوى الملف النصي
+      let content = '╔══════════════════════════════════════════════════════════════╗\n';
+      content += '║              سجل زيارات كتاب القواعد - السادس الإعدادي          ║\n';
+      content += '╚══════════════════════════════════════════════════════════════╝\n\n';
+      content += `📅 تاريخ التصدير: ${new Date().toLocaleString('ar-EG')}\n`;
+      content += `📊 إجمالي الزيارات: ${visits.length} زيارة\n`;
+      content += `═══════════════════════════════════════════════════════════════\n\n`;
+      
+      visits.forEach((visit, index) => {
+        content += `📌 الزيارة رقم ${index + 1}\n`;
+        content += `   🕐 التاريخ: ${visit.date}\n`;
+        content += `   ⏰ الوقت: ${visit.time}\n`;
+        content += `   🌐 المتصفح: ${visit.browser || 'غير معروف'}\n`;
+        content += `   💻 نظام التشغيل: ${visit.os || 'غير معروف'}\n`;
+        content += `   🔗 الرابط: ${visit.url}\n`;
+        content += `   📱 حجم الشاشة: ${visit.screenSize || 'غير معروف'}\n`;
+        content += `   🔙 المصدر: ${visit.referrer}\n`;
+        content += `   ─────────────────────────────────────────────────────────\n\n`;
+      });
+      
+      content += `═══════════════════════════════════════════════════════════════\n`;
+      content += `📝 تم إنشاء هذا الملف تلقائياً بواسطة نظام تسجيل الزيارات\n`;
+      content += `🕐 آخر تحديث: ${new Date().toLocaleString('ar-EG')}\n`;
+      
+      // تحميل الملف
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `visit_log_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showToast(`📥 تم تصدير ${visits.length} زيارة بنجاح`, false);
+      return true;
+    }
     
-    // إرسال البيانات إلى ملف PHP (يجب إنشاء ملف log_visit.php على الخادم)
-    // هذه الدالة ترسل البيانات بصورة غير متزامنة (خلفية) دون التأثير على تجربة المستخدم
-    
-    fetch('log_visit.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: 'log=' + encodeURIComponent(visitLog) + '&timestamp=' + Date.now()
-    }).catch(error => {
-      // في حالة فشل الاتصال (مثلاً عند التشغيل محلياً) لا نفعل شيئاً
-      console.log("تسجيل الزيارة غير متاح حالياً (يعمل فقط على الخادم)");
-    });
+    async clearAllVisits() {
+      await this.initDB();
+      
+      return new Promise((resolve, reject) => {
+        const transaction = this.db.transaction(['visits'], 'readwrite');
+        const store = transaction.objectStore('visits');
+        const request = store.clear();
+        
+        request.onsuccess = () => {
+          showToast("🗑️ تم مسح جميع سجلات الزيارات", false);
+          resolve();
+        };
+        request.onerror = () => reject(request.error);
+      });
+    }
   }
   
-  // ==================== نهاية دالة التسجيل ====================
+  // إنشاء كائن التسجيل
+  const visitLogger = new VisitLogger();
+  
+  // تسجيل الزيارة عند تحميل الصفحة (مرة واحدة فقط لكل جلسة)
+  let hasLogged = false;
+  
+  async function recordPageVisit() {
+    if (hasLogged) return;
+    try {
+      await visitLogger.logVisit();
+      hasLogged = true;
+      
+      // تحديث عداد الزيارات في الستاتس (اختياري)
+      const count = await visitLogger.getVisitsCount();
+      const statsSpan = document.getElementById("sessionStat");
+      if (statsSpan && !statsSpan.innerHTML.includes("زيارة")) {
+        statsSpan.innerHTML = `📊 ${count} زيارة | 📚 دروس القواعد`;
+      }
+    } catch(error) {
+      console.log("خطأ في تسجيل الزيارة:", error);
+    }
+  }
+  // ==================== نهاية نظام تسجيل الزيارات ====================
   
   // قائمة الدروس
   const grammarTopics = [
@@ -407,8 +546,7 @@
   ];
 
   // خريطة الروابط
-// خريطة الروابط - تأكد من تطابق العناوين تماماً
-const urlMap = {
+  const urlMap = {
     "النكرة و المعرفة": "https://ali8484.github.io/nakira/",
     "المعرف ب(ال)": "https://ali8484.github.io/muaarafBiAl/",
     "العلم": "https://ali8484.github.io/alaalam/",
@@ -424,14 +562,14 @@ const urlMap = {
     "رفع الفعل المضارع": "https://ali8484.github.io/RafiaMudharia/",
     "نصب الفعل المضارع": "https://ali8484.github.io/nasibmudharia/",
     "جزم الفعل المضارع": "https://ali8484.github.io/jazimmudharia/",
-    "الافعال الخمسة و اعرابها": "https://ali8484.github.io/alasmaaalkhamsa/",  // تأكد من الرابط الصحيح
-    "المثنى و اعرابه": "https://ali8484.github.io/almuthana/",  // تأكد من الرابط الصحيح
+    "الافعال الخمسة و اعرابها": "https://ali8484.github.io/alasmaaalkhamsa/",
+    "المثنى و اعرابه": "https://ali8484.github.io/almuthana/",
     "جمع المذكر السالم و اعرابه": "https://ali8484.github.io/jamiamuthakar/",
     "جمع المؤنث السالم و اعرابه": "https://ali8484.github.io/jamiamunath/",
     "جمع التكسير": "https://ali8484.github.io/jamiatakseer/",
     "الاسماء الخمسة": "https://ali8484.github.io/alasmaaalkhamsa/",
     "الصفة ( النعت )": "https://ali8484.github.io/sifa/"
-};
+  };
 
   let selectedCount = 0;
   let lastTopic = "لا شيء";
@@ -447,7 +585,7 @@ const urlMap = {
     toastMsgDiv.classList.add("show");
     setTimeout(() => {
       toastMsgDiv.classList.remove("show");
-    }, 2000);
+    }, 2500);
   }
 
   function updateSessionStats() {
@@ -576,6 +714,10 @@ const urlMap = {
     showToast("📚 كتاب القواعد للسادس الإعدادي — روابط تفاعلية لكل درس، اضغط على أي بطاقة للانتقال إلى المحتوى.", false);
   }
 
+  async function exportLogs() {
+    await visitLogger.exportToFile();
+  }
+
   function initAdvancedEffects() {
     const cards = document.querySelectorAll(".rule-card");
     cards.forEach(card => {
@@ -613,12 +755,15 @@ const urlMap = {
     const resetBtn = document.getElementById("resetStatsBtn");
     const glowBtn = document.getElementById("triggerEffectBtn");
     const infoAction = document.getElementById("infoBtn");
+    const exportBtn = document.getElementById("exportLogBtn");
+    
     if (resetBtn) resetBtn.addEventListener("click", resetProgress);
     if (glowBtn) glowBtn.addEventListener("click", ultimateNeonGlow);
     if (infoAction) infoAction.addEventListener("click", showBookInfo);
+    if (exportBtn) exportBtn.addEventListener("click", exportLogs);
   }
 
-  function init() {
+  async function init() {
     buildRulesGrid();
     bindActions();
     setTimeout(() => {
@@ -627,197 +772,11 @@ const urlMap = {
     }, 60);
     updateSessionStats();
     
-    // ========== استدعاء دالة تسجيل الزيارة ==========
-    // يتم استدعاؤها تلقائياً عند تحميل الصفحة
-    logPageVisit();
-    // ===============================================
+    // تسجيل الزيارة
+    await recordPageVisit();
   }
 
   init();
-</script>
-
-<!-- 
-  ==================== ملف log_visit.php ====================
-  يجب إنشاء هذا الملف في نفس المجلد مع الصفحة الرئيسية
-  محتوى الملف:
-  
-  <?php
-    // السماح بالطلبات من نفس المصدر
-    header('Content-Type: text/plain');
-    
-    // الحصول على البيانات المرسلة
-    $logData = isset($_POST['log']) ? $_POST['log'] : '';
-    $timestamp = isset($_POST['timestamp']) ? $_POST['timestamp'] : time();
-    
-    if (!empty($logData)) {
-        // إضافة عنوان IP الخاص بالزائر
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'غير معروف';
-        $logWithIp = "[IP: $ip] " . $logData;
-        
-        // كتابة البيانات في ملف نصي
-        $logFile = 'visit_log.txt';
-        file_put_contents($logFile, $logWithIp, FILE_APPEND | LOCK_EX);
-        
-        echo "تم تسجيل الزيارة بنجاح";
-    } else {
-        echo "لا توجد بيانات";
-    }
-  ?>
-  
-  ملاحظة: يجب رفع هذا الملف (log_visit.php) مع الصفحة الرئيسية على الخادم
-  وسيتم إنشاء ملف visit_log.txt تلقائياً عند أول زيارة
-  =======================================================
--->
-  <script>
-  // دالة تسجيل الزيارة باستخدام GitHub API
-  async function logPageVisit() {
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('ar-EG', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long'
-    });
-    const formattedTime = now.toLocaleTimeString('ar-EG', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-    
-    // الحصول على معلومات المتصفح
-    let browser = "غير معروف";
-    const ua = navigator.userAgent;
-    if (ua.indexOf("Chrome") > -1) browser = "Google Chrome";
-    else if (ua.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
-    else if (ua.indexOf("Safari") > -1) browser = "Apple Safari";
-    else if (ua.indexOf("Edge") > -1) browser = "Microsoft Edge";
-    
-    let os = "غير معروف";
-    if (ua.indexOf("Windows") > -1) os = "Windows";
-    else if (ua.indexOf("Mac") > -1) os = "MacOS";
-    else if (ua.indexOf("Linux") > -1) os = "Linux";
-    else if (ua.indexOf("Android") > -1) os = "Android";
-    else if (ua.indexOf("iPhone") > -1) os = "iOS";
-    
-    const visitLog = `[${formattedDate} - ${formattedTime}] | المتصفح: ${browser} | نظام التشغيل: ${os} | الصفحة: ${window.location.pathname}\n`;
-    
-    // حفظ الزيارة في localStorage مؤقتاً
-    let visits = JSON.parse(localStorage.getItem('pageVisits') || '[]');
-    visits.push({
-      time: now.toISOString(),
-      log: visitLog,
-      browser: browser,
-      os: os
-    });
-    localStorage.setItem('pageVisits', JSON.stringify(visits));
-    
-    console.log('تم تسجيل الزيارة محلياً:', visitLog);
-  }
-  
-  // استدعاء الدالة عند تحميل الصفحة
-  logPageVisit();
-</script>
-  <script>
-  // دالة تسجيل الزيارات مع حفظها في IndexedDB
-  class VisitLogger {
-    constructor() {
-      this.dbName = 'VisitLogsDB';
-      this.dbVersion = 1;
-      this.db = null;
-      this.initDB();
-    }
-    
-    async initDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(this.dbName, this.dbVersion);
-        
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-          this.db = request.result;
-          resolve();
-        };
-        
-        request.onupgradeneeded = (event) => {
-          const db = event.target.result;
-          if (!db.objectStoreNames.contains('visits')) {
-            const store = db.createObjectStore('visits', { keyPath: 'id', autoIncrement: true });
-            store.createIndex('timestamp', 'timestamp', { unique: false });
-          }
-        };
-      });
-    }
-    
-    async logVisit() {
-      await this.initDB();
-      
-      const now = new Date();
-      const visitData = {
-        timestamp: now.toISOString(),
-        date: now.toLocaleDateString('ar-EG'),
-        time: now.toLocaleTimeString('ar-EG'),
-        userAgent: navigator.userAgent,
-        url: window.location.href,
-        referrer: document.referrer || 'مباشر'
-      };
-      
-      return new Promise((resolve, reject) => {
-        const transaction = this.db.transaction(['visits'], 'readwrite');
-        const store = transaction.objectStore('visits');
-        const request = store.add(visitData);
-        
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-      });
-    }
-    
-    async getAllVisits() {
-      await this.initDB();
-      
-      return new Promise((resolve, reject) => {
-        const transaction = this.db.transaction(['visits'], 'readonly');
-        const store = transaction.objectStore('visits');
-        const request = store.getAll();
-        
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-    }
-    
-    async exportToFile() {
-      const visits = await this.getAllVisits();
-      let content = '# سجل زيارات الموقع\n';
-      content += '===================\n\n';
-      
-      visits.forEach(visit => {
-        content += `[${visit.date} - ${visit.time}]\n`;
-        content += `الرابط: ${visit.url}\n`;
-        content += `المتصفح: ${visit.userAgent}\n`;
-        content += `----------------------------------------\n\n`;
-      });
-      
-      // تحميل الملف
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'visit_log.txt';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  }
-  
-  // استخدام الكلاس
-  const logger = new VisitLogger();
-  
-  // تسجيل الزيارة عند تحميل الصفحة
-  logger.logVisit().then(() => {
-    console.log('تم تسجيل الزيارة في IndexedDB');
-  });
-  
-  // يمكن إضافة زر لتصدير السجل (اختياري)
-  // يمكنك إضافة هذا الزر في واجهتك إذا أردت
 </script>
 </body>
 </html>
