@@ -714,5 +714,107 @@
   // استدعاء الدالة عند تحميل الصفحة
   logPageVisit();
 </script>
+  <script>
+  // دالة تسجيل الزيارات مع حفظها في IndexedDB
+  class VisitLogger {
+    constructor() {
+      this.dbName = 'VisitLogsDB';
+      this.dbVersion = 1;
+      this.db = null;
+      this.initDB();
+    }
+    
+    async initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(this.dbName, this.dbVersion);
+        
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          this.db = request.result;
+          resolve();
+        };
+        
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains('visits')) {
+            const store = db.createObjectStore('visits', { keyPath: 'id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp', { unique: false });
+          }
+        };
+      });
+    }
+    
+    async logVisit() {
+      await this.initDB();
+      
+      const now = new Date();
+      const visitData = {
+        timestamp: now.toISOString(),
+        date: now.toLocaleDateString('ar-EG'),
+        time: now.toLocaleTimeString('ar-EG'),
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+        referrer: document.referrer || 'مباشر'
+      };
+      
+      return new Promise((resolve, reject) => {
+        const transaction = this.db.transaction(['visits'], 'readwrite');
+        const store = transaction.objectStore('visits');
+        const request = store.add(visitData);
+        
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+    
+    async getAllVisits() {
+      await this.initDB();
+      
+      return new Promise((resolve, reject) => {
+        const transaction = this.db.transaction(['visits'], 'readonly');
+        const store = transaction.objectStore('visits');
+        const request = store.getAll();
+        
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+    
+    async exportToFile() {
+      const visits = await this.getAllVisits();
+      let content = '# سجل زيارات الموقع\n';
+      content += '===================\n\n';
+      
+      visits.forEach(visit => {
+        content += `[${visit.date} - ${visit.time}]\n`;
+        content += `الرابط: ${visit.url}\n`;
+        content += `المتصفح: ${visit.userAgent}\n`;
+        content += `----------------------------------------\n\n`;
+      });
+      
+      // تحميل الملف
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'visit_log.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  }
+  
+  // استخدام الكلاس
+  const logger = new VisitLogger();
+  
+  // تسجيل الزيارة عند تحميل الصفحة
+  logger.logVisit().then(() => {
+    console.log('تم تسجيل الزيارة في IndexedDB');
+  });
+  
+  // يمكن إضافة زر لتصدير السجل (اختياري)
+  // يمكنك إضافة هذا الزر في واجهتك إذا أردت
+</script>
 </body>
 </html>
