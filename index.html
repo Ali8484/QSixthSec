@@ -195,6 +195,145 @@
       transition: 0.05s;
     }
 
+    /* ======= Facebook Follow Banner ======= */
+    .facebook-follow-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 0.5rem 0 1.5rem;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, rgba(24, 119, 242, 0.18), rgba(8, 50, 130, 0.35));
+      border: 1.5px solid rgba(24, 119, 242, 0.55);
+      border-radius: 1.5rem;
+      box-shadow: 0 0 18px rgba(24, 119, 242, 0.25), inset 0 0 10px rgba(24, 119, 242, 0.08);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .facebook-follow-banner::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(24, 119, 242, 0.15), transparent);
+      transition: left 0.7s ease;
+      pointer-events: none;
+    }
+
+    .facebook-follow-banner:hover::before {
+      left: 100%;
+    }
+
+    .facebook-follow-banner:hover {
+      border-color: #4a9fff;
+      box-shadow: 0 0 28px rgba(24, 119, 242, 0.5), inset 0 0 14px rgba(24, 119, 242, 0.15);
+      transform: translateY(-3px);
+      background: linear-gradient(135deg, rgba(24, 119, 242, 0.28), rgba(8, 50, 130, 0.5));
+    }
+
+    .facebook-follow-banner:active {
+      transform: scale(0.98) translateY(1px);
+    }
+
+    .fb-icon-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .fb-icon-svg {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #1877f2, #0a5ac9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(24, 119, 242, 0.5);
+      transition: all 0.3s ease;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .facebook-follow-banner:hover .fb-icon-svg {
+      transform: scale(1.12) rotate(-5deg);
+      box-shadow: 0 6px 20px rgba(24, 119, 242, 0.7);
+    }
+
+    .fb-text-group {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+      gap: 0.2rem;
+    }
+
+    .fb-follow-label {
+      font-size: 0.75rem;
+      color: #7ab3ff;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .fb-page-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(74, 159, 255, 0.6);
+      line-height: 1.2;
+    }
+
+    .fb-page-sub {
+      font-size: 0.7rem;
+      color: #89c0ff;
+      font-weight: 500;
+    }
+
+    .fb-follow-btn-pill {
+      background: linear-gradient(135deg, #1877f2, #0a5ac9);
+      color: white;
+      padding: 0.45rem 1.3rem;
+      border-radius: 2rem;
+      font-weight: 800;
+      font-size: 0.82rem;
+      border: none;
+      box-shadow: 0 3px 12px rgba(24, 119, 242, 0.5);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .facebook-follow-banner:hover .fb-follow-btn-pill {
+      background: linear-gradient(135deg, #4a9fff, #1877f2);
+      box-shadow: 0 5px 18px rgba(24, 119, 242, 0.7);
+      transform: scale(1.05);
+    }
+
+    .fb-pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #4ade80;
+      animation: fb-live-pulse 1.5s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes fb-live-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+    /* ======= End Facebook Follow Banner ======= */
+
     .action-bar {
       display: flex;
       justify-content: center;
@@ -282,9 +421,10 @@
       .rule-title { font-size: 1rem; }
       .stats-badge { font-size: 0.75rem; }
       .rules-grid { gap: 1rem; }
+      .fb-page-name { font-size: 0.9rem; }
+      .facebook-follow-banner { gap: 0.7rem; padding: 0.8rem 1rem; }
     }
   </style>
-    <!-- Google tag (gtag.js) - استبدل G-XXXXXXXXXX بالرقم الحقيقي -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -292,7 +432,6 @@
     gtag('js', new Date());
     gtag('config', 'G-FZ8V03GEQS');
   </script>
-  <!-- نهاية كود Google Analytics -->
 </head>
 <body>
 
@@ -308,6 +447,37 @@
   </div>
 
   <div class="rules-grid" id="rulesGrid"></div>
+
+  <!-- ======= بانر تابعونا على فيسبوك ======= -->
+  <a
+    class="facebook-follow-banner"
+    href="https://www.facebook.com/profile.php?id=100077412354478"
+    target="_blank"
+    rel="noopener noreferrer"
+    title="تابعونا على فيسبوك - كتاب القراءة للصف الرابع الابتدائي"
+    onclick="showFbToast()"
+  >
+    <div class="fb-pulse-dot"></div>
+
+    <div class="fb-icon-wrapper">
+      <div class="fb-icon-svg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
+          <path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.256h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="fb-text-group">
+      <span class="fb-follow-label">📢 تابعونا على فيسبوك</span>
+      <span class="fb-page-name">📚 كتاب القراءة — الصف الرابع الابتدائي</span>
+      <span class="fb-page-sub">محتوى تعليمي تفاعلي لطلاب المرحلة الابتدائية</span>
+    </div>
+
+    <div class="fb-follow-btn-pill">
+      👍 تابع الصفحة
+    </div>
+  </a>
+  <!-- ======= نهاية بانر فيسبوك ======= -->
 
   <div class="action-bar">
     <div class="action-btn" id="resetStatsBtn">
@@ -328,69 +498,35 @@
 <div id="toastMsg" class="toast-notify">✨ تنبيه القواعد</div>
 
 <script>
-  // ==================== دالة تسجيل وقت وتاريخ تحميل الصفحة ====================
-  // هذه الدالة تعمل بشكل مخفي تماماً ولا تظهر في الواجهة
-  // تقوم بتسجيل وقت وتاريخ الزيارة في ملف visit_log.txt على الخادم
-  
   function logPageVisit() {
-    // الحصول على التاريخ والوقت الحالي بتنسيق عربي
     const now = new Date();
-    const formattedDate = now.toLocaleDateString('ar-EG', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long'
-    });
-    const formattedTime = now.toLocaleTimeString('ar-EG', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-    
-    // الحصول على معلومات المتصفح ونظام التشغيل (اختياري)
+    const formattedDate = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const userAgent = navigator.userAgent;
     let browser = "غير معروف";
     let os = "غير معروف";
-    
     if (userAgent.indexOf("Chrome") > -1) browser = "Google Chrome";
     else if (userAgent.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
     else if (userAgent.indexOf("Safari") > -1) browser = "Apple Safari";
     else if (userAgent.indexOf("Edge") > -1) browser = "Microsoft Edge";
     else if (userAgent.indexOf("Opera") > -1) browser = "Opera";
-    
     if (userAgent.indexOf("Windows") > -1) os = "Windows";
     else if (userAgent.indexOf("Mac") > -1) os = "MacOS";
     else if (userAgent.indexOf("Linux") > -1) os = "Linux";
     else if (userAgent.indexOf("Android") > -1) os = "Android";
     else if (userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) os = "iOS";
-    
-    // الحصول على عنوان IP (سيتم الحصول عليه من خلال خدمة خارجية أو يمكن تركه فارغاً)
-    // ملاحظة: لا يمكن الحصول على IP مباشرة من JavaScript، يمكن استخدام API خارجي أو تسجيله من جهة الخادم
-    
-    // بناء سجل الزيارة
     const visitLog = `[${formattedDate} - ${formattedTime}] | المتصفح: ${browser} | نظام التشغيل: ${os} | الصفحة: ${window.location.pathname || "/"}\n`;
-    
-    // إرسال البيانات إلى ملف PHP (يجب إنشاء ملف log_visit.php على الخادم)
-    // هذه الدالة ترسل البيانات بصورة غير متزامنة (خلفية) دون التأثير على تجربة المستخدم
-    
     fetch('log_visit.php', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: 'log=' + encodeURIComponent(visitLog) + '&timestamp=' + Date.now()
-    }).catch(error => {
-      // في حالة فشل الاتصال (مثلاً عند التشغيل محلياً) لا نفعل شيئاً
+    }).catch(() => {
       console.log("تسجيل الزيارة غير متاح حالياً (يعمل فقط على الخادم)");
     });
   }
-  
-  // ==================== نهاية دالة التسجيل ====================
-  
-  // قائمة الدروس
+
   const grammarTopics = [
     { id: "nakirah_marifah", title: "النكرة و المعرفة", desc: "تمييز النكرة والمعرفة وأقسامها", icon: "🔍📖" },
-    // { id: "anwaa_marifah", title: "بعض أنواع المعارف", desc: "الضمائر، أسماء الإشارة، الموصولات", icon: "🏷️🔖" },
     { id: "al_tareef", title: "المعرف ب(ال)", desc: "أل التعريف وأقسامها", icon: "🟢ال" },
     { id: "alam", title: "العلم", desc: "العلم وأنواعه وعلاماته", icon: "⭐🏷️" },
     { id: "idafah", title: "المعرف بالاضافة", desc: "الإضافة إلى معرفة", icon: "➕📘" },
@@ -415,9 +551,7 @@
     { id: "sifah_naat", title: "الصفة ( النعت )", desc: "النعت الحقيقي والسببي", icon: "🎨📝" }
   ];
 
-  // خريطة الروابط
-// خريطة الروابط - تأكد من تطابق العناوين تماماً
-const urlMap = {
+  const urlMap = {
     "النكرة و المعرفة": "https://ali8484.github.io/nakira/",
     "المعرف ب(ال)": "https://ali8484.github.io/muaarafBiAl/",
     "العلم": "https://ali8484.github.io/alaalam/",
@@ -433,14 +567,14 @@ const urlMap = {
     "رفع الفعل المضارع": "https://ali8484.github.io/RafiaMudharia/",
     "نصب الفعل المضارع": "https://ali8484.github.io/nasibmudharia/",
     "جزم الفعل المضارع": "https://ali8484.github.io/jazimmudharia/",
-    "الافعال الخمسة و اعرابها": "https://ali8484.github.io/alaafaalalkhamsa/",  // تأكد من الرابط الصحيح
-    "المثنى و اعرابه": "https://ali8484.github.io/almuthana/",  // تأكد من الرابط الصحيح
+    "الافعال الخمسة و اعرابها": "https://ali8484.github.io/alaafaalalkhamsa/",
+    "المثنى و اعرابه": "https://ali8484.github.io/almuthana/",
     "جمع المذكر السالم و اعرابه": "https://ali8484.github.io/jamiamuthakar/",
     "جمع المؤنث السالم و اعرابه": "https://ali8484.github.io/jamiamunath/",
     "جمع التكسير": "https://ali8484.github.io/jamiatakseer/",
     "الاسماء الخمسة": "https://ali8484.github.io/alasmaaalkhamsa/",
     "الصفة ( النعت )": "https://ali8484.github.io/sifa/"
-};
+  };
 
   let selectedCount = 0;
   let lastTopic = "لا شيء";
@@ -454,9 +588,15 @@ const urlMap = {
     toastMsgDiv.style.borderRightColor = isError ? "#ff6680" : "#0ff";
     toastMsgDiv.style.color = isError ? "#ffaa99" : "#b5ffff";
     toastMsgDiv.classList.add("show");
-    setTimeout(() => {
-      toastMsgDiv.classList.remove("show");
-    }, 2000);
+    setTimeout(() => { toastMsgDiv.classList.remove("show"); }, 2500);
+  }
+
+  function showFbToast() {
+    toastMsgDiv.textContent = "👍 شكراً! جارٍ الانتقال إلى صفحة فيسبوك...";
+    toastMsgDiv.style.borderRightColor = "#1877f2";
+    toastMsgDiv.style.color = "#89c0ff";
+    toastMsgDiv.classList.add("show");
+    setTimeout(() => { toastMsgDiv.classList.remove("show"); }, 2500);
   }
 
   function updateSessionStats() {
@@ -479,7 +619,6 @@ const urlMap = {
     selectedCount++;
     lastTopic = topicTitle;
     updateSessionStats();
-
     const activeCard = document.querySelector(`.rule-card[data-topicid='${topicId}']`);
     if (activeCard) {
       activeCard.classList.add("pulse-effect");
@@ -490,23 +629,17 @@ const urlMap = {
         setTimeout(() => { if(innerBtn) innerBtn.style.transform = ""; }, 150);
       }
     }
-
     const targetUrl = urlMap[topicTitle];
     if (targetUrl) {
       showToast(`🚀 جارٍ الانتقال إلى درس: ${topicTitle}`, false);
-      setTimeout(() => {
-        window.open(targetUrl, "_blank", "noopener,noreferrer");
-      }, 200);
+      setTimeout(() => { window.open(targetUrl, "_blank", "noopener,noreferrer"); }, 200);
     } else {
       const explanation = getDescriptionForTopic(topicTitle);
       showToast(`📘 ${topicTitle} : ${explanation.substring(0, 110)}${explanation.length > 110 ? '…' : ''}`, false);
     }
-    
     document.body.style.transition = "0.2s";
     document.body.style.boxShadow = "inset 0 0 45px rgba(0,255,200,0.2)";
-    setTimeout(() => {
-      document.body.style.boxShadow = "";
-    }, 300);
+    setTimeout(() => { document.body.style.boxShadow = ""; }, 300);
   }
 
   function buildRulesGrid() {
@@ -515,38 +648,24 @@ const urlMap = {
       const card = document.createElement("div");
       card.className = "rule-card";
       card.setAttribute("data-topicid", topic.id);
-      
       const iconSpan = document.createElement("div");
       iconSpan.className = "rule-icon";
       iconSpan.textContent = topic.icon;
-      
       const titleSpan = document.createElement("div");
       titleSpan.className = "rule-title";
       titleSpan.textContent = topic.title;
-      
       const descSpan = document.createElement("div");
       descSpan.className = "rule-desc";
       descSpan.textContent = topic.desc;
-      
       const studyButton = document.createElement("button");
       studyButton.className = "study-btn";
       studyButton.innerHTML = "🎮 ابدأ اللعب";
-      
-      card.addEventListener("click", (e) => {
-        e.stopPropagation();
-        exploreTopic(topic.id, topic.title);
-      });
-      
-      studyButton.addEventListener("click", (e) => {
-        e.stopPropagation();
-        exploreTopic(topic.id, topic.title);
-      });
-      
+      card.addEventListener("click", (e) => { e.stopPropagation(); exploreTopic(topic.id, topic.title); });
+      studyButton.addEventListener("click", (e) => { e.stopPropagation(); exploreTopic(topic.id, topic.title); });
       card.appendChild(iconSpan);
       card.appendChild(titleSpan);
       card.appendChild(descSpan);
       card.appendChild(studyButton);
-      
       card.style.borderTop = `3px solid #2dc9ff`;
       rulesContainer.appendChild(card);
     });
@@ -557,8 +676,7 @@ const urlMap = {
     lastTopic = "لا شيء";
     updateSessionStats();
     showToast("🔄 تمت إعادة ضبط عداد الدروس", false);
-    const allCards = document.querySelectorAll(".rule-card");
-    allCards.forEach(card => {
+    document.querySelectorAll(".rule-card").forEach(card => {
       card.style.transform = "scale(0.98)";
       setTimeout(() => { card.style.transform = ""; }, 150);
     });
@@ -566,15 +684,10 @@ const urlMap = {
 
   function ultimateNeonGlow() {
     showToast("✨✨ تأثير النيون الشامل — جميع الدروس تتوهج ✨✨", false);
-    const allElements = document.querySelectorAll(".rule-card, .action-btn");
-    allElements.forEach(el => {
+    document.querySelectorAll(".rule-card, .action-btn").forEach(el => {
       el.classList.add("pulse-effect");
-      const origBox = el.style.boxShadow;
       el.style.boxShadow = "0 0 20px cyan, 0 0 8px magenta";
-      setTimeout(() => {
-        el.style.boxShadow = origBox || "";
-        el.classList.remove("pulse-effect");
-      }, 550);
+      setTimeout(() => { el.style.boxShadow = ""; el.classList.remove("pulse-effect"); }, 550);
     });
     const hub = document.querySelector(".grammar-hub");
     hub.style.boxShadow = "0 0 0 2px cyan, 0 25px 45px rgba(0,0,0,0.6)";
@@ -582,31 +695,25 @@ const urlMap = {
   }
 
   function showBookInfo() {
-    showToast("📚 كتاب القواعد للسادس الإعدادي — روابط تفاعلية لكل درس، اضغط على أي بطاقة للانتقال إلى المحتوى.", false);
+    showToast("📚 كتاب القواعد للسادس الإبتدائي — روابط تفاعلية لكل درس، اضغط على أي بطاقة للانتقال إلى المحتوى.", false);
   }
 
   function initAdvancedEffects() {
-    const cards = document.querySelectorAll(".rule-card");
-    cards.forEach(card => {
+    document.querySelectorAll(".rule-card").forEach(card => {
       card.addEventListener("mousemove", (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const xPercent = (x / rect.width) * 100;
-        const yPercent = (y / rect.height) * 100;
-        card.style.background = `radial-gradient(circle at ${xPercent}% ${yPercent}%, rgba(0, 210, 255, 0.2), rgba(8, 12, 28, 0.92))`;
+        card.style.background = `radial-gradient(circle at ${(x/rect.width)*100}% ${(y/rect.height)*100}%, rgba(0,210,255,0.2), rgba(8,12,28,0.92))`;
       });
-      card.addEventListener("mouseleave", () => {
-        card.style.background = "";
-      });
+      card.addEventListener("mouseleave", () => { card.style.background = ""; });
     });
   }
 
   function welcomeAnimation() {
     showToast("📖 مرحباً بك في كتاب القواعد — روابط مباشرة للدروس", false);
     setTimeout(() => {
-      const cards = document.querySelectorAll(".rule-card");
-      cards.forEach((card, idx) => {
+      document.querySelectorAll(".rule-card").forEach((card, idx) => {
         card.style.opacity = "0";
         card.style.transform = "translateY(20px)";
         setTimeout(() => {
@@ -630,104 +737,40 @@ const urlMap = {
   function init() {
     buildRulesGrid();
     bindActions();
-    setTimeout(() => {
-      initAdvancedEffects();
-      welcomeAnimation();
-    }, 60);
+    setTimeout(() => { initAdvancedEffects(); welcomeAnimation(); }, 60);
     updateSessionStats();
-    
-    // ========== استدعاء دالة تسجيل الزيارة ==========
-    // يتم استدعاؤها تلقائياً عند تحميل الصفحة
     logPageVisit();
-    // ===============================================
   }
 
   init();
 </script>
 
-<!-- 
-  ==================== ملف log_visit.php ====================
-  يجب إنشاء هذا الملف في نفس المجلد مع الصفحة الرئيسية
-  محتوى الملف:
-  
-  <?php
-    // السماح بالطلبات من نفس المصدر
-    header('Content-Type: text/plain');
-    
-    // الحصول على البيانات المرسلة
-    $logData = isset($_POST['log']) ? $_POST['log'] : '';
-    $timestamp = isset($_POST['timestamp']) ? $_POST['timestamp'] : time();
-    
-    if (!empty($logData)) {
-        // إضافة عنوان IP الخاص بالزائر
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'غير معروف';
-        $logWithIp = "[IP: $ip] " . $logData;
-        
-        // كتابة البيانات في ملف نصي
-        $logFile = 'visit_log.txt';
-        file_put_contents($logFile, $logWithIp, FILE_APPEND | LOCK_EX);
-        
-        echo "تم تسجيل الزيارة بنجاح";
-    } else {
-        echo "لا توجد بيانات";
-    }
-  ?>
-  
-  ملاحظة: يجب رفع هذا الملف (log_visit.php) مع الصفحة الرئيسية على الخادم
-  وسيتم إنشاء ملف visit_log.txt تلقائياً عند أول زيارة
-  =======================================================
--->
-  <script>
-  // دالة تسجيل الزيارة باستخدام GitHub API
+<script>
   async function logPageVisit() {
     const now = new Date();
-    const formattedDate = now.toLocaleDateString('ar-EG', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long'
-    });
-    const formattedTime = now.toLocaleTimeString('ar-EG', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-    
-    // الحصول على معلومات المتصفح
+    const formattedDate = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     let browser = "غير معروف";
     const ua = navigator.userAgent;
     if (ua.indexOf("Chrome") > -1) browser = "Google Chrome";
     else if (ua.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
     else if (ua.indexOf("Safari") > -1) browser = "Apple Safari";
     else if (ua.indexOf("Edge") > -1) browser = "Microsoft Edge";
-    
     let os = "غير معروف";
     if (ua.indexOf("Windows") > -1) os = "Windows";
     else if (ua.indexOf("Mac") > -1) os = "MacOS";
     else if (ua.indexOf("Linux") > -1) os = "Linux";
     else if (ua.indexOf("Android") > -1) os = "Android";
     else if (ua.indexOf("iPhone") > -1) os = "iOS";
-    
     const visitLog = `[${formattedDate} - ${formattedTime}] | المتصفح: ${browser} | نظام التشغيل: ${os} | الصفحة: ${window.location.pathname}\n`;
-    
-    // حفظ الزيارة في localStorage مؤقتاً
     let visits = JSON.parse(localStorage.getItem('pageVisits') || '[]');
-    visits.push({
-      time: now.toISOString(),
-      log: visitLog,
-      browser: browser,
-      os: os
-    });
+    visits.push({ time: now.toISOString(), log: visitLog, browser, os });
     localStorage.setItem('pageVisits', JSON.stringify(visits));
-    
     console.log('تم تسجيل الزيارة محلياً:', visitLog);
   }
-  
-  // استدعاء الدالة عند تحميل الصفحة
-  logPageVisit();
 </script>
-  <script>
-  // دالة تسجيل الزيارات مع حفظها في IndexedDB
+
+<script>
   class VisitLogger {
     constructor() {
       this.dbName = 'VisitLogsDB';
@@ -735,17 +778,11 @@ const urlMap = {
       this.db = null;
       this.initDB();
     }
-    
     async initDB() {
       return new Promise((resolve, reject) => {
         const request = indexedDB.open(this.dbName, this.dbVersion);
-        
         request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-          this.db = request.result;
-          resolve();
-        };
-        
+        request.onsuccess = () => { this.db = request.result; resolve(); };
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
           if (!db.objectStoreNames.contains('visits')) {
@@ -755,10 +792,8 @@ const urlMap = {
         };
       });
     }
-    
     async logVisit() {
       await this.initDB();
-      
       const now = new Date();
       const visitData = {
         timestamp: now.toISOString(),
@@ -768,65 +803,17 @@ const urlMap = {
         url: window.location.href,
         referrer: document.referrer || 'مباشر'
       };
-      
       return new Promise((resolve, reject) => {
         const transaction = this.db.transaction(['visits'], 'readwrite');
         const store = transaction.objectStore('visits');
         const request = store.add(visitData);
-        
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
       });
     }
-    
-    async getAllVisits() {
-      await this.initDB();
-      
-      return new Promise((resolve, reject) => {
-        const transaction = this.db.transaction(['visits'], 'readonly');
-        const store = transaction.objectStore('visits');
-        const request = store.getAll();
-        
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-    }
-    
-    async exportToFile() {
-      const visits = await this.getAllVisits();
-      let content = '# سجل زيارات الموقع\n';
-      content += '===================\n\n';
-      
-      visits.forEach(visit => {
-        content += `[${visit.date} - ${visit.time}]\n`;
-        content += `الرابط: ${visit.url}\n`;
-        content += `المتصفح: ${visit.userAgent}\n`;
-        content += `----------------------------------------\n\n`;
-      });
-      
-      // تحميل الملف
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'visit_log.txt';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
   }
-  
-  // استخدام الكلاس
   const logger = new VisitLogger();
-  
-  // تسجيل الزيارة عند تحميل الصفحة
-  logger.logVisit().then(() => {
-    console.log('تم تسجيل الزيارة في IndexedDB');
-  });
-  
-  // يمكن إضافة زر لتصدير السجل (اختياري)
-  // يمكنك إضافة هذا الزر في واجهتك إذا أردت
+  logger.logVisit().then(() => { console.log('تم تسجيل الزيارة في IndexedDB'); });
 </script>
 </body>
 </html>
